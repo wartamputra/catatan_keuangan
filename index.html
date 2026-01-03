@@ -10,24 +10,25 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        input::-webkit-calendar-picker-indicator { opacity: 0.3; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .animate-slide-up { animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
 
-    <div class="max-w-md mx-auto min-h-screen flex flex-col relative pb-24">
+    <div class="max-w-md mx-auto min-h-screen flex flex-col relative pb-24 shadow-2xl bg-white/50">
         <!-- Header -->
         <header class="p-6 bg-white sticky top-0 z-10 border-b border-slate-100 glass-effect">
             <div class="flex justify-between items-center">
                 <div>
-                    <p class="text-sm text-slate-500">Total Saldo</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Saldo</p>
                     <h1 id="total-saldo" class="text-2xl font-bold text-slate-800">Rp 0</h1>
                 </div>
-                <button onclick="fetchTransactions()" class="bg-indigo-50 p-2 rounded-full text-indigo-600 active:rotate-180 transition-transform duration-500">
+                <button onclick="fetchTransactions()" class="bg-indigo-50 p-2.5 rounded-full text-indigo-600 active:rotate-180 transition-transform duration-500">
                     <i data-lucide="refresh-cw" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -36,13 +37,13 @@
         <!-- Tab Beranda -->
         <div id="tab-home" class="tab-content active">
             <div class="px-6 py-4">
-                <div class="bg-indigo-600 rounded-3xl p-6 text-white shadow-xl shadow-indigo-200 grid grid-cols-2 gap-4">
+                <div class="bg-indigo-600 rounded-[2rem] p-6 text-white shadow-xl shadow-indigo-100 grid grid-cols-2 gap-4">
                     <div class="border-r border-white/20">
-                        <p class="text-xs text-indigo-200 uppercase font-bold mb-1">Pemasukan</p>
+                        <p class="text-[10px] text-indigo-200 uppercase font-bold mb-1 tracking-wider">Pemasukan</p>
                         <p id="total-pemasukan" class="text-lg font-bold text-emerald-300">Rp 0</p>
                     </div>
                     <div class="pl-2">
-                        <p class="text-xs text-indigo-200 uppercase font-bold mb-1">Pengeluaran</p>
+                        <p class="text-[10px] text-indigo-200 uppercase font-bold mb-1 tracking-wider">Pengeluaran</p>
                         <p id="total-pengeluaran" class="text-lg font-bold text-rose-300">Rp 0</p>
                     </div>
                 </div>
@@ -51,13 +52,7 @@
             <div class="px-6 py-2">
                 <h3 class="font-bold text-lg mb-4 text-slate-700">Aktivitas Terbaru</h3>
                 <div id="transaction-list" class="space-y-3">
-                    <div class="animate-pulse flex space-x-4 p-4 bg-white rounded-2xl">
-                        <div class="rounded-full bg-slate-200 h-10 w-10"></div>
-                        <div class="flex-1 space-y-3 py-1">
-                            <div class="h-2 bg-slate-200 rounded"></div>
-                            <div class="h-2 bg-slate-200 rounded w-5/6"></div>
-                        </div>
-                    </div>
+                    <div class="text-center py-10"><p class="text-slate-400 text-sm">Memuat data...</p></div>
                 </div>
             </div>
         </div>
@@ -66,14 +61,8 @@
         <div id="tab-report" class="tab-content">
             <div class="px-6 py-4 space-y-6">
                 <h3 class="font-bold text-lg text-slate-700">Rekap Keuangan</h3>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Bulanan</p>
-                    <div id="recap-monthly" class="space-y-3"></div>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Tahunan</p>
-                    <div id="recap-yearly" class="space-y-3"></div>
-                </div>
+                <div id="recap-monthly" class="space-y-3"></div>
+                <div id="recap-yearly" class="space-y-3"></div>
             </div>
         </div>
 
@@ -88,319 +77,225 @@
         <!-- Tab Pengaturan -->
         <div id="tab-settings" class="tab-content">
             <div class="px-6 py-4 space-y-6">
-                <h3 class="font-bold text-lg text-slate-700">Pengaturan Aplikasi</h3>
+                <h3 class="font-bold text-lg text-slate-700">Pengaturan Sistem</h3>
                 
-                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                    <h4 class="text-sm font-bold text-slate-600 mb-4">Kelola Daftar Dropdown</h4>
-                    <p class="text-xs text-slate-400 mb-4">Tambah kategori atau keterangan yang sering digunakan ke Google Sheets.</p>
-                    
+                <!-- Form Tambah -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                    <h4 class="text-sm font-bold text-slate-600 mb-4">Tambah Ke Dropdown</h4>
                     <div class="space-y-3">
-                        <input id="new-setting-val" class="w-full bg-slate-100 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500" placeholder="Ketik nama kategori/keterangan...">
+                        <input id="new-setting-val" class="w-full bg-slate-100 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-indigo-500" placeholder="Ketik nama baru...">
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="addSetting('Keterangan')" class="bg-indigo-600 text-white py-3 rounded-xl text-xs font-bold shadow-sm active:scale-95 transition-all">Tambah Keterangan</button>
-                            <button onclick="addSetting('Kategori')" class="bg-emerald-600 text-white py-3 rounded-xl text-xs font-bold shadow-sm active:scale-95 transition-all">Tambah Kategori</button>
+                            <button onclick="addSetting('Keterangan')" class="bg-indigo-600 text-white py-3.5 rounded-2xl text-[11px] font-bold shadow-sm active:scale-95 transition-all">Add Keterangan</button>
+                            <button onclick="addSetting('Kategori')" class="bg-emerald-600 text-white py-3.5 rounded-2xl text-[11px] font-bold shadow-sm active:scale-95 transition-all">Add Kategori</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- List Management -->
+                <div class="space-y-4">
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Daftar Keterangan</h4>
+                        <div id="manage-keterangan" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Daftar Kategori</h4>
+                        <div id="manage-kategori" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
                 <div class="p-4 text-center">
-                    <p class="text-xs text-slate-300 italic">Versi 1.3.0 - FinTrack Auto-Sync</p>
+                    <p class="text-[10px] text-slate-300 italic tracking-widest font-bold uppercase">FinTrack Pro v1.5.0</p>
                 </div>
             </div>
         </div>
 
         <!-- Float Button -->
-        <button onclick="toggleModal(true)" class="fixed bottom-24 right-6 bg-indigo-600 text-white p-4 rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all z-20">
+        <button onclick="toggleModal(true)" class="fixed bottom-24 right-6 bg-indigo-600 text-white p-4.5 rounded-2xl shadow-2xl shadow-indigo-200 hover:scale-110 active:scale-95 transition-all z-20">
             <i data-lucide="plus" class="w-8 h-8"></i>
         </button>
 
         <!-- Navbar Bottom -->
-        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-100 p-4 flex justify-around items-center z-20 shadow-2xl">
-            <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center text-indigo-600" data-tab="home">
-                <i data-lucide="home"></i>
-                <span class="text-[10px] font-bold mt-1">Beranda</span>
-            </button>
-            <button onclick="switchTab('report')" class="nav-btn flex flex-col items-center text-slate-300" data-tab="report">
-                <i data-lucide="pie-chart"></i>
-                <span class="text-[10px] font-bold mt-1">Laporan</span>
-            </button>
-            <button onclick="switchTab('wallet')" class="nav-btn flex flex-col items-center text-slate-300" data-tab="wallet">
-                <i data-lucide="wallet"></i>
-                <span class="text-[10px] font-bold mt-1">Dompet</span>
-            </button>
-            <button onclick="switchTab('settings')" class="nav-btn flex flex-col items-center text-slate-300" data-tab="settings">
-                <i data-lucide="settings"></i>
-                <span class="text-[10px] font-bold mt-1">Sistem</span>
-            </button>
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-md border-t border-slate-100 p-4 flex justify-around items-center z-20">
+            <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center text-indigo-600" data-tab="home"><i data-lucide="home"></i><span class="text-[9px] font-bold mt-1.5 uppercase tracking-wider">Beranda</span></button>
+            <button onclick="switchTab('report')" class="nav-btn flex flex-col items-center text-slate-300" data-tab="report"><i data-lucide="pie-chart"></i><span class="text-[9px] font-bold mt-1.5 uppercase tracking-wider">Laporan</span></button>
+            <button onclick="switchTab('wallet')" class="nav-btn flex flex-col items-center text-slate-300" data-tab="wallet"><i data-lucide="wallet"></i><span class="text-[9px] font-bold mt-1.5 uppercase tracking-wider">Dompet</span></button>
+            <button onclick="switchTab('settings')" class="nav-btn flex flex-col items-center text-slate-300" data-tab="settings"><i data-lucide="settings"></i><span class="text-[9px] font-bold mt-1.5 uppercase tracking-wider">Sistem</span></button>
         </nav>
 
         <!-- Modal Form -->
-        <div id="modal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-end sm:items-center justify-center p-4">
-            <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 animate-slide-up shadow-2xl relative">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold text-slate-800">Catat Transaksi</h2>
-                    <button onclick="toggleModal(false)" class="text-slate-400 p-2 hover:bg-slate-50 rounded-full transition-colors"><i data-lucide="x"></i></button>
-                </div>
-
-                <div class="space-y-5">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Keterangan</label>
-                        <input list="list-keterangan" id="desc" class="w-full bg-slate-100 border-none rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500" placeholder="Makan siang, Gaji, dll...">
-                        <datalist id="list-keterangan"></datalist>
-                    </div>
-
+        <div id="modal" class="fixed inset-0 bg-slate-900/40 hidden z-50 flex items-end sm:items-center justify-center p-4 backdrop-blur-sm">
+            <div class="bg-white w-full max-w-md rounded-[3rem] p-8 animate-slide-up shadow-2xl relative">
+                <div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800">Baru</h2><button onclick="toggleModal(false)" class="text-slate-300 p-2"><i data-lucide="x"></i></button></div>
+                <div class="space-y-6">
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Keterangan</label><input list="list-keterangan" id="desc" class="w-full bg-slate-50 border-none rounded-2xl p-4.5" placeholder="Ketik/Pilih..."><datalist id="list-keterangan"></datalist></div>
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Jenis</label>
-                            <select id="type" class="w-full bg-slate-100 border-none rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500 text-sm">
-                                <option value="Keluar">Pengeluaran</option>
-                                <option value="Masuk">Pemasukan</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Kategori</label>
-                            <input list="list-kategori" id="category" class="w-full bg-slate-100 border-none rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500" placeholder="Kategori...">
-                            <datalist id="list-kategori"></datalist>
-                        </div>
+                        <div><label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Tipe</label><select id="type" class="w-full bg-slate-50 border-none rounded-2xl p-4.5 text-sm font-bold"><option value="Keluar">Pengeluaran</option><option value="Masuk">Pemasukan</option></select></div>
+                        <div><label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Kategori</label><input list="list-kategori" id="category" class="w-full bg-slate-50 border-none rounded-2xl p-4.5" placeholder="Kategori..."><datalist id="list-kategori"></datalist></div>
                     </div>
-
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Jumlah (Rp)</label>
-                        <input list="list-jumlah" type="number" id="amount" class="w-full bg-slate-100 border-none rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500 font-bold text-xl text-indigo-600" placeholder="0">
-                        <datalist id="list-jumlah"></datalist>
-                    </div>
-
-                    <button onclick="saveTransaction()" id="save-btn" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-[1.5rem] shadow-xl shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition-all">
-                        Simpan Transaksi
-                    </button>
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Jumlah</label><input type="number" id="amount" class="w-full bg-slate-50 border-none rounded-2xl p-5 font-bold text-2xl text-indigo-600" placeholder="0"></div>
+                    <button onclick="saveTransaction()" id="save-btn" class="w-full bg-indigo-600 text-white font-bold py-5 rounded-[2rem] text-sm uppercase tracking-widest">Simpan Transaksi</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbz6BDKv_YpFF92Eg4TXCmFRX5s__shJ_tCzgv_2eskS9OXVlFQJ5rkEBUfk9cQddRAPtw/exec"; 
 
-        function toggleModal(show) {
-            document.getElementById('modal').classList.toggle('hidden', !show);
-        }
-
+        function toggleModal(show) { document.getElementById('modal').classList.toggle('hidden', !show); }
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
-            
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                if(btn.dataset.tab === tabId) {
-                    btn.classList.replace('text-slate-300', 'text-indigo-600');
-                } else {
-                    btn.classList.replace('text-indigo-600', 'text-slate-300');
-                }
+                if(btn.dataset.tab === tabId) btn.classList.replace('text-slate-300', 'text-indigo-600');
+                else btn.classList.replace('text-indigo-600', 'text-slate-300');
             });
             lucide.createIcons();
         }
 
-        function formatRupiah(number) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
-        }
+        function formatRupiah(number) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number); }
 
         async function fetchTransactions() {
-            if (!API_URL) return alert("API URL belum diisi!");
+            if (!API_URL) return;
             const refreshIcon = document.querySelector('[data-lucide="refresh-cw"]');
             refreshIcon.parentElement.classList.add('animate-spin');
-            
             try {
                 const response = await fetch(API_URL);
                 const result = await response.json();
                 
                 updateDatalist('list-keterangan', result.dropdowns.keterangan);
                 updateDatalist('list-kategori', result.dropdowns.kategori);
-                updateDatalist('list-jumlah', result.dropdowns.jumlah);
-
+                
                 renderUI(result.transactions);
                 renderRecap(result.recap);
                 renderWallet(result.transactions);
-            } catch (error) {
-                console.error("Fetch error:", error);
-            } finally {
-                refreshIcon.parentElement.classList.remove('animate-spin');
-            }
+                renderSettingsLists(result.dropdowns);
+            } catch (error) { console.error(error); } 
+            finally { refreshIcon.parentElement.classList.remove('animate-spin'); }
         }
 
         function updateDatalist(id, data) {
-            const dl = document.getElementById(id);
-            dl.innerHTML = data.map(val => `<option value="${val}">`).join('');
+            document.getElementById(id).innerHTML = data.map(val => `<option value="${val}">`).join('');
+        }
+
+        function renderSettingsLists(dropdowns) {
+            const ketDiv = document.getElementById('manage-keterangan');
+            const katDiv = document.getElementById('manage-kategori');
+            
+            ketDiv.innerHTML = dropdowns.keterangan.map(item => `
+                <div class="flex items-center bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                    <span class="text-xs font-medium mr-2">${item}</span>
+                    <button onclick="deleteSetting('Keterangan', '${item}')" class="text-rose-400 hover:text-rose-600"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i></button>
+                </div>
+            `).join('') || '<p class="text-[10px] text-slate-300">Belum ada data</p>';
+
+            katDiv.innerHTML = dropdowns.kategori.map(item => `
+                <div class="flex items-center bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                    <span class="text-xs font-medium mr-2">${item}</span>
+                    <button onclick="deleteSetting('Kategori', '${item}')" class="text-rose-400 hover:text-rose-600"><i data-lucide="x-circle" class="w-3.5 h-3.5"></i></button>
+                </div>
+            `).join('') || '<p class="text-[10px] text-slate-300">Belum ada data</p>';
+            
+            lucide.createIcons();
+        }
+
+        async function deleteSetting(type, value) {
+            if(!confirm(`Hapus ${type}: "${value}"?`)) return;
+            try {
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "deleteSetting", type: type, value: value }) });
+                fetchTransactions();
+            } catch (error) { alert("Gagal hapus"); }
         }
 
         function renderUI(data) {
             const list = document.getElementById('transaction-list');
             let totalMasuk = 0, totalKeluar = 0;
-            
-            list.innerHTML = data.length ? "" : '<div class="text-center py-20 text-slate-400"><i data-lucide="inbox" class="mx-auto w-10 h-10 mb-2"></i><p>Belum ada transaksi</p></div>';
+            list.innerHTML = data.length ? "" : '<div class="text-center py-20 text-slate-400"><i data-lucide="inbox" class="mx-auto w-10 h-10 mb-2"></i><p>Kosong</p></div>';
 
             data.slice().reverse().forEach(item => {
                 const isMasuk = item.Jenis === "Masuk";
                 if (isMasuk) totalMasuk += item.Jumlah; else totalKeluar += item.Jumlah;
-
                 list.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-slate-50 hover:border-indigo-100 transition-all">
+                    <div class="bg-white p-4 rounded-3xl flex items-center justify-between border border-slate-50 group hover:border-indigo-100 transition-all">
                         <div class="flex items-center gap-3">
-                            <div class="${isMasuk ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'} p-2.5 rounded-xl">
-                                <i data-lucide="${isMasuk ? 'trending-up' : 'trending-down'}" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-sm text-slate-800">${item.Keterangan}</p>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">${item.Kategori}</p>
-                            </div>
+                            <div class="${isMasuk ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'} p-3 rounded-2xl"><i data-lucide="${isMasuk ? 'trending-up' : 'trending-down'}" class="w-5 h-5"></i></div>
+                            <div><p class="font-bold text-sm text-slate-800">${item.Keterangan}</p><p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">${item.Kategori}</p></div>
                         </div>
-                        <div class="text-right">
-                            <p class="font-bold text-sm ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">
-                                ${isMasuk ? '+' : '-'} ${formatRupiah(item.Jumlah)}
-                            </p>
-                            <p class="text-[10px] text-slate-400 font-medium">${new Date(item.Tanggal).toLocaleDateString('id-ID')}</p>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right"><p class="font-bold text-sm ${isMasuk ? 'text-emerald-600' : 'text-rose-600'}">${isMasuk ? '+' : '-'} ${formatRupiah(item.Jumlah)}</p><p class="text-[9px] text-slate-300 font-medium">${new Date(item.Tanggal).toLocaleDateString('id-ID')}</p></div>
+                            <button onclick="deleteTransaction('${item.ID}')" class="text-slate-200 hover:text-rose-500 transition-colors p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </div>
                 `;
             });
-
             document.getElementById('total-pemasukan').innerText = formatRupiah(totalMasuk);
             document.getElementById('total-pengeluaran').innerText = formatRupiah(totalKeluar);
             document.getElementById('total-saldo').innerText = formatRupiah(totalMasuk - totalKeluar);
             lucide.createIcons();
         }
 
-        function renderRecap(recap) {
-            const mList = document.getElementById('recap-monthly');
-            const yList = document.getElementById('recap-yearly');
-            mList.innerHTML = ""; yList.innerHTML = "";
-
-            Object.keys(recap.monthly).sort().reverse().forEach(month => {
-                const val = recap.monthly[month];
-                mList.innerHTML += createRecapCard(month, val.masuk, val.keluar);
-            });
-
-            Object.keys(recap.yearly).sort().reverse().forEach(year => {
-                const val = recap.yearly[year];
-                yList.innerHTML += createRecapCard(year, val.masuk, val.keluar);
-            });
+        async function deleteTransaction(id) {
+            if(!confirm("Hapus transaksi ini?")) return;
+            try {
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "deleteTransaction", id: id }) });
+                fetchTransactions();
+            } catch (error) { alert("Gagal"); }
         }
 
-        function createRecapCard(label, masuk, keluar) {
-            const untung = masuk - keluar;
-            return `
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="font-bold text-slate-800">${label}</span>
-                        <span class="text-[10px] font-bold ${untung >= 0 ? 'text-emerald-500 bg-emerald-50' : 'text-rose-500 bg-rose-50'} px-2 py-1 rounded-full uppercase">
-                            Sisa: ${formatRupiah(untung)}
-                        </span>
+        function renderRecap(recap) {
+            const mList = document.getElementById('recap-monthly');
+            mList.innerHTML = Object.keys(recap.monthly).sort().reverse().map(month => {
+                const val = recap.monthly[month];
+                const untung = val.masuk - val.keluar;
+                return `
+                    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                        <div class="flex justify-between items-center mb-4"><span class="font-bold text-slate-800">${month}</span><span class="text-[10px] font-bold ${untung >= 0 ? 'text-emerald-500 bg-emerald-50' : 'text-rose-500 bg-rose-50'} px-3 py-1.5 rounded-full uppercase">Net: ${formatRupiah(untung)}</span></div>
+                        <div class="flex gap-4"><div class="flex-1"><p class="text-[9px] text-slate-400 font-bold mb-1">Masuk</p><p class="text-sm font-bold text-emerald-500">${formatRupiah(val.masuk)}</p></div><div class="flex-1 border-l pl-4"><p class="text-[9px] text-slate-400 font-bold mb-1">Keluar</p><p class="text-sm font-bold text-rose-500">${formatRupiah(val.keluar)}</p></div></div>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="flex-1">
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Pemasukan</p>
-                            <p class="text-sm font-bold text-emerald-500">${formatRupiah(masuk)}</p>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Pengeluaran</p>
-                            <p class="text-sm font-bold text-rose-500">${formatRupiah(keluar)}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+                `;
+            }).join('');
         }
 
         function renderWallet(data) {
             const walletList = document.getElementById('wallet-list');
             const categories = {};
-            
             data.forEach(item => {
                 if(!categories[item.Kategori]) categories[item.Kategori] = 0;
-                if(item.Jenis === 'Masuk') categories[item.Kategori] += item.Jumlah;
-                else categories[item.Kategori] -= item.Jumlah;
+                categories[item.Kategori] += (item.Jenis === 'Masuk' ? item.Jumlah : -item.Jumlah);
             });
-
-            walletList.innerHTML = "";
-            Object.keys(categories).sort().forEach(cat => {
-                const balance = categories[cat];
-                walletList.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100 shadow-sm">
-                        <div class="flex items-center gap-3">
-                            <div class="bg-indigo-50 text-indigo-500 p-2.5 rounded-xl">
-                                <i data-lucide="folder" class="w-5 h-5"></i>
-                            </div>
-                            <span class="font-bold text-sm text-slate-700">${cat || 'Tanpa Kategori'}</span>
-                        </div>
-                        <span class="font-bold text-sm ${balance >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${formatRupiah(balance)}</span>
-                    </div>
-                `;
-            });
+            walletList.innerHTML = Object.keys(categories).sort().map(cat => `
+                <div class="bg-white p-5 rounded-3xl flex items-center justify-between border border-slate-100 shadow-sm">
+                    <div class="flex items-center gap-3"><div class="bg-indigo-50 text-indigo-500 p-3 rounded-2xl"><i data-lucide="folder" class="w-5 h-5"></i></div><span class="font-bold text-sm text-slate-700">${cat || 'Lainnya'}</span></div>
+                    <span class="font-bold text-sm ${categories[cat] >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${formatRupiah(categories[cat])}</span>
+                </div>
+            `).join('');
             lucide.createIcons();
         }
 
         async function saveTransaction() {
-            const payload = {
-                keterangan: document.getElementById('desc').value,
-                jenis: document.getElementById('type').value,
-                kategori: document.getElementById('category').value,
-                jumlah: document.getElementById('amount').value
-            };
-
-            if (!payload.keterangan || !payload.jumlah) return alert("Lengkapi data!");
-
+            const payload = { keterangan: document.getElementById('desc').value, jenis: document.getElementById('type').value, kategori: document.getElementById('category').value, jumlah: document.getElementById('amount').value };
+            if (!payload.keterangan || !payload.jumlah) return alert("Isi dulu!");
             const btn = document.getElementById('save-btn');
-            btn.disabled = true; btn.innerText = "Menyimpan...";
-
-            try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                document.getElementById('desc').value = "";
-                document.getElementById('amount').value = "";
-                toggleModal(false);
-                fetchTransactions();
-            } catch (error) {
-                alert("Gagal simpan");
-            } finally {
-                btn.disabled = false; btn.innerText = "Simpan Transaksi";
-            }
+            btn.disabled = true; btn.innerText = "...";
+            try { await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }); toggleModal(false); fetchTransactions(); } 
+            catch (error) { alert("Error!"); } 
+            finally { btn.disabled = false; btn.innerText = "SIMPAN TRANSAKSI"; }
         }
 
         async function addSetting(type) {
             const input = document.getElementById('new-setting-val');
             const value = input.value.trim();
-            if(!value) return alert("Isi teks dulu!");
-
+            if(!value) return alert("Kosong!");
             const btn = event.target;
-            const originalText = btn.innerText;
             btn.disabled = true;
-            btn.innerText = "Processing...";
-
             try {
-                const payload = {
-                    action: "addSetting",
-                    type: type,
-                    value: value
-                };
-
-                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                const result = await response.json();
-
-                if (result.status === "success") {
-                    input.value = "";
-                    alert(type + " baru berhasil ditambahkan!");
-                    fetchTransactions(); // Refresh dropdown data
-                }
-            } catch (error) {
-                console.error(error);
-                alert("Gagal menyimpan ke Google Sheets");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = originalText;
-            }
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "addSetting", type: type, value: value }) });
+                input.value = ""; fetchTransactions();
+            } catch (error) { alert("Gagal!"); } 
+            finally { btn.disabled = false; }
         }
 
-        window.onload = () => {
-            lucide.createIcons();
-            fetchTransactions();
-        };
+        window.onload = () => { lucide.createIcons(); fetchTransactions(); };
     </script>
 </body>
 </html>
